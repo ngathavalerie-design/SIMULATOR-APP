@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Organism</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #050510;
+            --color-bg-light: #0a0a1a;
+            --color-primary: #4ecdc4;
+            --color-secondary: #556270;
+            --color-danger: #ff6b6b;
+            --color-warning: #f9a825;
+            --color-success: #16c79a;
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--color-bg);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Animated Background */
+        .universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #050510 70%);
+            z-index: -2;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Grid Overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(78, 205, 196, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(78, 205, 196, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 80px 1fr 120px;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            background: rgba(15, 52, 96, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            border-radius: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(78, 205, 196, 0.8); }
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--color-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge.healthy {
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            box-shadow: 0 0 10px rgba(22, 199, 154, 0.3);
+        }
+
+        .status-badge.stressed {
+            border: 1px solid var(--color-warning);
+            color: var(--color-warning);
+            animation: warning-pulse 1s infinite;
+        }
+
+        .status-badge.critical {
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            animation: critical-pulse 0.5s infinite;
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(249, 168, 37, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(249, 168, 37, 0.6); }
+        }
+
+        @keyframes critical-pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(255, 107, 107, 0.9); }
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .connection-status {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Left Panel - Vitals */
+        .vitals-panel {
+            background: rgba(15, 52, 96, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--color-primary);
+            border-radius: 2px;
+        }
+
+        .organ-vital {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .organ-vital:hover {
+            transform: translateX(5px);
+            border-color: rgba(78, 205, 196, 0.3);
+        }
+
+        .organ-vital.attacked {
+            animation: shake 0.5s ease-in-out;
+            border-color: var(--color-danger);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .organ-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .organ-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .organ-icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .organ-status {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .health-bar-container {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .health-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .health-bar.healthy { background: linear-gradient(90deg, var(--color-success), #2ecc71); }
+        .health-bar.warning { background: linear-gradient(90deg, var(--color-warning), #ff9800); }
+        .health-bar.critical { background: linear-gradient(90deg, var(--color-danger), #e74c3c); }
+
+        .health-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .metric-value {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Center - The Organism */
+        .organism-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .organism-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+        }
+
+        /* Central Core */
+        .core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--color-primary), #0f3460);
+            box-shadow: 
+                0 0 60px rgba(78, 205, 196, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            animation: core-pulse 2s ease-in-out infinite;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .core:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .core::before {
+            content: '❤️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+
+        @keyframes core-pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 60px rgba(78, 205, 196, 0.6);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.05);
+                box-shadow: 0 0 80px rgba(78, 205, 196, 0.8);
+            }
+        }
+
+        .core.attacked {
+            animation: core-damage 0.5s ease-in-out;
+            background: radial-gradient(circle at 30% 30%, var(--color-danger), #900);
+        }
+
+        @keyframes core-damage {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        /* Orbiting Nodes */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px dashed rgba(78, 205, 196, 0.2);
+            border-radius: 50%;
+            animation: orbit-rotate linear infinite;
+        }
+
+        .orbit-1 { width: 200px; height: 200px; animation-duration: 20s; }
+        .orbit-2 { width: 300px; height: 300px; animation-duration: 30s; animation-direction: reverse; }
+        .orbit-3 { width: 400px; height: 400px; animation-duration: 40s; }
+
+        @keyframes orbit-rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(15, 52, 96, 0.8);
+            border: 2px solid var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(78, 205, 196, 0.6);
+        }
+
+        .node.attacked {
+            border-color: var(--color-danger);
+            background: rgba(255, 107, 107, 0.2);
+            animation: node-shake 0.5s ease-in-out;
+        }
+
+        @keyframes node-shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(5px, -5px); }
+            75% { transform: translate(-5px, -5px); }
+        }
+
+        .node-1 { top: -30px; left: 50%; transform: translateX(-50%); }
+        .node-2 { top: 50%; right: -30px; transform: translateY(-50%); }
+        .node-3 { bottom: -30px; left: 50%; transform: translateX(-50%); }
+        .node-4 { top: 50%; left: -30px; transform: translateY(-50%); }
+
+        /* Connection Lines */
+        .connection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, var(--color-primary), transparent);
+            transform-origin: top center;
+            opacity: 0.3;
+            animation: data-flow 2s linear infinite;
+        }
+
+        @keyframes data-flow {
+            0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle)) scaleY(0); }
+            50% { opacity: 0.6; }
+            100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle)) scaleY(1); }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 3s ease-in-out infinite;
+        }
+
+        @keyframes particle-float {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Right Panel - Chaos Controls */
+        .chaos-panel {
+            background: rgba(15, 52, 96, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .attack-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .attack-btn {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .attack-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--glow-color), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .attack-btn:hover::before {
+            opacity: 0.2;
+        }
+
+        .attack-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--glow-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .attack-btn:active {
+            transform: translateY(0);
+        }
+
+        .attack-btn.danger { --glow-color: var(--color-danger); }
+        .attack-btn.warning { --glow-color: var(--color-warning); }
+        .attack-btn.info { --glow-color: #2196f3; }
+        .attack-btn.magic { --glow-color: #9c27b0; }
+
+        .attack-icon {
+            font-size: 2rem;
+            z-index: 1;
+            filter: drop-shadow(0 0 10px var(--glow-color));
+        }
+
+        .attack-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 1;
+            color: #fff;
+        }
+
+        .attack-desc {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .auto-chaos {
+            margin-top: 10px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--color-danger), #c0392b);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: var(--font-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--color-success), #27ae60);
+        }
+
+        /* Bottom Panel - Logs & Narrative */
+        .narrative-panel {
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .logs-section {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .logs-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-entry {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 8px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            border-left: 3px solid transparent;
+            animation: log-slide 0.3s ease;
+        }
+
+        @keyframes log-slide {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-entry.attack { border-left-color: var(--color-danger); background: rgba(255, 107, 107, 0.1); }
+        .log-entry.recovery { border-left-color: var(--color-success); background: rgba(22, 199, 154, 0.1); }
+        .log-entry.info { border-left-color: var(--color-primary); background: rgba(78, 205, 196, 0.1); }
+
+        .log-time {
+            color: rgba(255, 255, 255, 0.4);
+            margin-right: 8px;
+        }
+
+        .narrative-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 52, 96, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        .narrative-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            line-height: 1.6;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background: var(--color-primary);
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Modal for Details */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-bg-light);
+            border: 1px solid var(--color-primary);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: modal-appear 0.3s ease;
+        }
+
+        @keyframes modal-appear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--color-danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto;
+                overflow-y: auto;
+            }
+            
+            .organism-container {
+                transform: scale(0.8);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3dbdb5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="universe"></div>
+    <div class="stars" id="stars"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🧬</div>
+                <div class="logo-text">
+                    <h1>Digital Organism</h1>
+                    <p>Chaos Engineering Simulator</p>
+                </div>
+            </div>
+            <div class="system-status">
+                <div class="status-badge healthy" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span id="statusText">SYSTEM HEALTHY</span>
+                </div>
+                <div class="connection-status">
+                    <span id="connectionStatus">● Connected</span> | 
+                    <span id="uptime">Uptime: 00:00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Left Panel: Vitals -->
+        <aside class="vitals-panel">
+            <h2 class="panel-title">Organ Vitals</h2>
+            
+            <div class="organ-vital" id="heart-vital" data-organ="heart">
+                <div class="organ-header">
+                    <div class="organ-name">
+                        <span class="organ-icon">❤️</span>
+                        <span>Heart (User Service)</span>
+                    </div>
+                    <span class="organ-status" id="heart-status">HEALTHY</span>
+                </div>
+                <div class="health-bar-container">
+                    <div class="health-bar healthy" id="heart-bar" style="width: 100%"></div>
+                </div>
+                <div class="health-text">
+                    <span>Health</span>
+                    <span id="heart-percent">100%</span>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <span>Latency</span>
+                        <span class="metric-value" id="heart-latency">12ms</span>
+                    </div>
+                    <div class="metric">
+                        <span>Requests</span>
+                        <span class="metric-value" id="heart-requests">1,240</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="organ-vital" id="lungs-vital" data-organ="lungs">
+                <div class="organ-header">
+                    <div class="organ-name">
+                        <span class="organ-icon">🫁</span>
+                        <span>Lungs (Order Service)</span>
+                    </div>
+                    <span class="organ-status" id="lungs-status">HEALTHY</span>
+                </div>
+                <div class="health-bar-container">
+                    <div class="health-bar healthy" id="lungs-bar" style="width: 100%"></div>
+                </div>
+                <div class="health-text">
+                    <span>Health</span>
+                    <span id="lungs-percent">100%</span>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <span>Throughput</span>
+                        <span class="metric-value" id="lungs-throughput">450/s</span>
+                    </div>
+                    <div class="metric">
+                        <span>Errors</span>
+                        <span class="metric-value" id="lungs-errors">0.01%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="organ-vital" id="brain-vital" data-organ="brain">
+                <div class="organ-header">
+                    <div class="organ-name">
+                        <span class="organ-icon">🧠</span>
+                        <span>Brain (Payment Service)</span>
+                    </div>
+                    <span class="organ-status" id="brain-status">HEALTHY</span>
+                </div>
+                <div class="health-bar-container">
+                    <div class="health-bar healthy" id="brain-bar" style="width: 100%"></div>
+                </div>
+                <div class="health-text">
+                    <span>Health</span>
+                    <span id="brain-percent">100%</span>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <span>Success Rate</span>
+                        <span class="metric-value" id="brain-success">99.9%</span>
+                    </div>
+                    <div class="metric">
+                        <span>Queue</span>
+                        <span class="metric-value" id="brain-queue">23</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="organ-vital" id="liver-vital" data-organ="liver">
+                <div class="organ-header">
+                    <div class="organ-name">
+                        <span class="organ-icon">🔔</span>
+                        <span>Liver (Notifications)</span>
+                    </div>
+                    <span class="organ-status" id="liver-status">HEALTHY</span>
+                </div>
+                <div class="health-bar-container">
+                    <div class="health-bar healthy" id="liver-bar" style="width: 100%"></div>
+                </div>
+                <div class="health-text">
+                    <span>Health</span>
+                    <span id="liver-percent">100%</span>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <span>Processed</span>
+                        <span class="metric-value" id="liver-processed">8,432</span>
+                    </div>
+                    <div class="metric">
+                        <span>Pending</span>
+                        <span class="metric-value" id="liver-pending">5</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: The Organism -->
+        <main class="organism-stage">
+            <div class="organism-container" id="organism">
+                <!-- Orbits -->
+                <div class="orbit orbit-1">
+                    <div class="node node-1" data-organ="lungs" title="Order Service">🫁</div>
+                </div>
+                <div class="orbit orbit-2">
+                    <div class="node node-2" data-organ="brain" title="Payment Service">🧠</div>
+                    <div class="node node-4" data-organ="liver" title="Notification Service">🔔</div>
+                </div>
+                <div class="orbit orbit-3">
+                    <div class="node node-3" data-organ="heart" title="User Service">❤️</div>
+                </div>
+
+                <!-- Core -->
+                <div class="core" id="core" title="System Core"></div>
+
+                <!-- Connection Lines -->
+                <div class="connection" style="--angle: 0deg; height: 100px;"></div>
+                <div class="connection" style="--angle: 90deg; height: 150px;"></div>
+                <div class="connection" style="--angle: 180deg; height: 200px;"></div>
+                <div class="connection" style="--angle: 270deg; height: 150px;"></div>
+            </div>
+        </main>
+
+        <!-- Right Panel: Chaos Controls -->
+        <aside class="chaos-panel">
+            <h2 class="panel-title">Chaos Injection</h2>
+            
+            <div class="attack-grid">
+                <button class="attack-btn danger" onclick="triggerAttack('kill', 'heart')">
+                    <span class="attack-icon">💀</span>
+                    <span class="attack-name">Cardiac Arrest</span>
+                    <span class="attack-desc">Kill container</span>
+                </button>
+                
+                <button class="attack-btn warning" onclick="triggerAttack('latency', 'brain')">
+                    <span class="attack-icon">⏱️</span>
+                    <span class="attack-name">Brain Fog</span>
+                    <span class="attack-desc">Add latency</span>
+                </button>
+                
+                <button class="attack-btn info" onclick="triggerAttack('cpu', 'lungs')">
+                    <span class="attack-icon">🔥</span>
+                    <span class="attack-name">Fever</span>
+                    <span class="attack-desc">CPU stress</span>
+                </button>
+                
+                <button class="attack-btn magic" onclick="triggerAttack('memory', 'liver')">
+                    <span class="attack-icon">🎈</span>
+                    <span class="attack-name">Swelling</span>
+                    <span class="attack-desc">Memory leak</span>
+                </button>
+            </div>
+
+            <div class="auto-chaos">
+                <button class="toggle-btn" id="autoChaosBtn" onclick="toggleAutoChaos()">
+                    <span>▶</span>
+                    <span>Start Auto Chaos</span>
+                </button>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 10px;">Resilience Patterns</h3>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <span style="padding: 4px 8px; background: rgba(78, 205, 196, 0.2); border-radius: 4px; font-size: 0.75rem; color: var(--color-primary);">Circuit Breaker</span>
+                    <span style="padding: 4px 8px; background: rgba(78, 205, 196, 0.2); border-radius: 4px; font-size: 0.75rem; color: var(--color-primary);">Retry</span>
+                    <span style="padding: 4px 8px; background: rgba(78, 205, 196, 0.2); border-radius: 4px; font-size: 0.75rem; color: var(--color-primary);">Fallback</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Bottom: Logs & Narrative -->
+        <section class="narrative-panel">
+            <div class="logs-section">
+                <h3 class="logs-title">📋 System Logs</h3>
+                <div id="logsContainer">
+                    <div class="log-entry info">
+                        <span class="log-time">08:19:42</span>
+                        <span>System initialized. All organs operational.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="narrative-display">
+                <p class="narrative-text" id="narrativeText">
+                    The digital organism is in a state of equilibrium. All biological processes are functioning within normal parameters.
+                    <span class="typing-cursor"></span>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h2 id="modalTitle">Organ Details</h2>
+            <div id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System State
+        const state = {
+            organs: {
+                heart: { name: 'Heart', service: 'User Service', health: 100, status: 'healthy', latency: 12, requests: 1240 },
+                lungs: { name: 'Lungs', service: 'Order Service', health: 100, status: 'healthy', throughput: 450, errors: 0.01 },
+                brain: { name: 'Brain', service: 'Payment Service', health: 100, status: 'healthy', successRate: 99.9, queue: 23 },
+                liver: { name: 'Liver', service: 'Notification Service', health: 100, status: 'healthy', processed: 8432, pending: 5 }
+            },
+            isAutoChaos: false,
+            autoChaosInterval: null,
+            logs: [],
+            startTime: Date.now()
+        };
+
+        const narratives = {
+            healthy: [
+                "The digital organism pulses with stable energy. All biological processes harmonize in perfect synchrony.",
+                "Homeostasis maintained. The system breathes easily, processing data with effortless grace.",
+                "Equilibrium achieved. Every node in the network sings in unified chorus."
+            ],
+            stressed: [
+                "Warning signs emerge. The organism's rhythm falters as stress factors accumulate.",
+                "Strain detected in peripheral systems. Auto-immune responses activating.",
+                "The digital biology compensates for emerging instabilities. Resilience patterns engaging."
+            ],
+            critical: [
+                "CRITICAL: Multiple organ failure imminent. Emergency protocols initiated.",
+                "The organism fights for survival against overwhelming chaos. Circuit breakers firing.",
+                "System integrity compromised. Initiating emergency healing procedures."
+            ],
+            recovering: [
+                "Healing energies flow through damaged tissues. Services restarting...",
+                "Recovery mode active. The organism's self-repair mechanisms engage.",
+                "Stabilization in progress. Homeostasis gradually restoring."
+            ]
+        };
+
+        const attackNarratives = {
+            kill: "Sudden cardiac arrest! The heart container flatlines. Initiating emergency restart...",
+            latency: "Neural pathways congest. Synaptic delays increasing. Thought processes slow...",
+            cpu: "Fever spikes! Metabolic rate exceeds safe thresholds. Cooling systems activating...",
+            memory: "Tissue swelling detected. Membrane capacity reaching critical limits..."
+        };
+
+        // Initialize Stars
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 'px';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Create Particles
+        function createParticle(x, y, color) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.background = color;
+            particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+            document.querySelector('.organism-stage').appendChild(particle);
+            setTimeout(() => particle.remove(), 3000);
+        }
+
+        // Update UI
+        function updateOrganDisplay(organId) {
+            const organ = state.organs[organId];
+            const vital = document.getElementById(`${organId}-vital`);
+            const bar = document.getElementById(`${organId}-bar`);
+            const percent = document.getElementById(`${organId}-percent`);
+            const status = document.getElementById(`${organId}-status`);
+            
+            // Update bar
+            bar.style.width = organ.health + '%';
+            bar.className = 'health-bar ' + (organ.health > 70 ? 'healthy' : organ.health > 30 ? 'warning' : 'critical');
+            
+            // Update text
+            percent.textContent = Math.round(organ.health) + '%';
+            status.textContent = organ.status.toUpperCase();
+            status.style.color = organ.health > 70 ? 'var(--color-success)' : organ.health > 30 ? 'var(--color-warning)' : 'var(--color-danger)';
+            
+            // Update metrics with random variations
+            if (organId === 'heart') {
+                document.getElementById('heart-latency').textContent = Math.round(organ.latency + Math.random() * 5) + 'ms';
+                document.getElementById('heart-requests').textContent = (organ.requests + Math.floor(Math.random() * 10)).toLocaleString();
+            }
+        }
+
+        function updateSystemStatus() {
+            const avgHealth = Object.values(state.organs).reduce((a, b) => a + b.health, 0) / 4;
+            const statusBadge = document.getElementById('systemStatus');
+            const statusText = document.getElementById('statusText');
+            
+            statusBadge.className = 'status-badge ' + (avgHealth > 70 ? 'healthy' : avgHealth > 30 ? 'stressed' : 'critical');
+            statusText.textContent = avgHealth > 70 ? 'SYSTEM HEALTHY' : avgHealth > 30 ? 'SYSTEM STRESSED' : 'SYSTEM CRITICAL';
+            
+            // Update narrative
+            updateNarrative(avgHealth);
+        }
+
+        function updateNarrative(avgHealth) {
+            const narrativeEl = document.getElementById('narrativeText');
+            let pool;
+            if (avgHealth > 70) pool = narratives.healthy;
+            else if (avgHealth > 30) pool = narratives.stressed;
+            else if (avgHealth > 0) pool = narratives.critical;
+            else pool = narratives.recovering;
+            
+            const text = pool[Math.floor(Math.random() * pool.length)];
+            typewriterEffect(narrativeEl, text);
+        }
+
+        function typewriterEffect(element, text) {
+            element.innerHTML = text + '<span class="typing-cursor"></span>';
+        }
+
+        // Attack Functions
+        function triggerAttack(type, target) {
+            const organ = state.organs[target];
+            
+            // Visual feedback
+            const vital = document.getElementById(`${target}-vital`);
+            const node = document.querySelector(`[data-organ="${target}"]`);
+            
+            vital.classList.add('attacked');
+            if (node) node.classList.add('attacked');
+            document.getElementById('core').classList.add('attacked');
+            
+            setTimeout(() => {
+                vital.classList.remove('attacked');
+                if (node) node.classList.remove('attacked');
+                document.getElementById('core').classList.remove('attacked');
+            }, 500);
+            
+            // Create particles
+            const rect = vital.getBoundingClientRect();
+            for (let i = 0; i < 5; i++) {
+                createParticle(rect.left + rect.width/2, rect.top + rect.height/2, '#ff6b6b');
+            }
+            
+            // Apply damage
+            let damage = 0;
+            switch(type) {
+                case 'kill': damage = 60; break;
+                case 'latency': damage = 30; break;
+                case 'cpu': damage = 40; break;
+                case 'memory': damage = 35; break;
+            }
+            
+            organ.health = Math.max(0, organ.health - damage);
+            organ.status = organ.health > 70 ? 'healthy' : organ.health > 30 ? 'warning' : 'critical';
+            
+            // Log
+            addLog('attack', `Chaos injected: ${type.toUpperCase()} on ${organ.service}. Health dropped to ${Math.round(organ.health)}%`);
+            
+            // Narrative
+            const narrativeEl = document.getElementById('narrativeText');
+            typewriterEffect(narrativeEl, attackNarratives[type]);
+            
+            // Recovery simulation (shows resilience)
+            setTimeout(() => {
+                if (organ.health < 100) {
+                    organ.health = Math.min(100, organ.health + 20);
+                    organ.status = organ.health > 70 ? 'healthy' : organ.health > 30 ? 'warning' : 'critical';
+                    addLog('recovery', `Auto-recovery: ${organ.service} healed to ${Math.round(organ.health)}%`);
+                    updateOrganDisplay(target);
+                    updateSystemStatus();
+                    
+                    // Visual feedback for healing
+                    const rect = vital.getBoundingClientRect();
+                    for (let i = 0; i < 3; i++) {
+                        createParticle(rect.left + rect.width/2, rect.top + rect.height/2, '#16c79a');
+                    }
+                }
+            }, 2000);
+            
+            updateOrganDisplay(target);
+            updateSystemStatus();
+            
+            // Haptic feedback
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function addLog(type, message) {
+            const container = document.getElementById('logsContainer');
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `<span class="log-time">${time}</span><span>${message}</span>`;
+            container.insertBefore(entry, container.firstChild);
+            
+            // Keep only last 20 logs
+            while (container.children.length > 20) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Auto Chaos
+        function toggleAutoChaos() {
+            const btn = document.getElementById('autoChaosBtn');
+            state.isAutoChaos = !state.isAutoChaos;
+            
+            if (state.isAutoChaos) {
+                btn.classList.add('active');
+                btn.innerHTML = '<span>⏸</span><span>Stop Auto Chaos</span>';
+                addLog('info', 'Auto chaos mode activated. Random attacks initiated.');
+                
+                state.autoChaosInterval = setInterval(() => {
+                    const organs = ['heart', 'lungs', 'brain', 'liver'];
+                    const types = ['kill', 'latency', 'cpu', 'memory'];
+                    const randomOrgan = organs[Math.floor(Math.random() * organs.length)];
+                    const randomType = types[Math.floor(Math.random() * types.length)];
+                    triggerAttack(randomType, randomOrgan);
+                }, 5000);
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<span>▶</span><span>Start Auto Chaos</span>';
+                addLog('info', 'Auto chaos mode deactivated.');
+                clearInterval(state.autoChaosInterval);
+            }
+        }
+
+        // Uptime Counter
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+            const hours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('uptime').textContent = `Uptime: ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Modal
+        function showModal(organId) {
+            const organ = state.organs[organId];
+            document.getElementById('modalTitle').textContent = `${organ.name} (${organ.service})`;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Health Status:</span>
+                        <span style="color: ${organ.health > 70 ? 'var(--color-success)' : organ.health > 30 ? 'var(--color-warning)' : 'var(--color-danger)'}">${organ.status.toUpperCase()}</span>
+                    </div>
+                    <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden;">
+                        <div style="width: ${organ.health}%; height: 100%; background: ${organ.health > 70 ? 'var(--color-success)' : organ.health > 30 ? 'var(--color-warning)' : 'var(--color-danger)'}; transition: all 0.3s;"></div>
+                    </div>
+                </div>
+                <p style="line-height: 1.6; color: rgba(255,255,255,0.8);">
+                    This organ represents the ${organ.service} microservice in the distributed system. 
+                    It processes critical business logic and communicates with other services via REST APIs and message queues.
+                </p>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                    <h4 style="margin-bottom: 10px; color: var(--color-primary);">Resilience Patterns Active:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 5px 0;">✓ Circuit Breaker Pattern</li>
+                        <li style="padding: 5px 0;">✓ Exponential Backoff Retry</li>
+                        <li style="padding: 5px 0;">✓ Graceful Degradation</li>
+                        <li style="padding: 5px 0;">✓ Health Check Probes</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.organ-vital').forEach(vital => {
+            vital.addEventListener('click', () => showModal(vital.dataset.organ));
+        });
+
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('click', () => showModal(node.dataset.organ));
+        });
+
+        document.getElementById('core').addEventListener('click', () => {
+            addLog('info', 'System core scan initiated. All primary functions nominal.');
+            updateNarrative(100);
+        });
+
+        // Close modal on outside click
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeModal();
+        });
+
+        // Initialize
+        createStars();
+        setInterval(updateUptime, 1000);
+        
+        // Random background fluctuations
+        setInterval(() => {
+            Object.keys(state.organs).forEach(organ => {
+                if (Math.random() > 0.7) {
+                    state.organs[organ].health = Math.min(100, state.organs[organ].health + Math.random() * 2);
+                    updateOrganDisplay(organ);
+                }
+            });
+            updateSystemStatus();
+        }, 3000);
+
+        // Initial log
+        setTimeout(() => {
+            addLog('info', 'Circuit breakers armed. System ready for chaos engineering.');
+        }, 1000);
+    </script>
+</body>
+</html>
